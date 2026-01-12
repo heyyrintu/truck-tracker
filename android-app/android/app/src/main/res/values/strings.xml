@@ -4,4 +4,10 @@
     <string name="title_activity_main">Driver Tracker</string>
     <string name="package_name">com.drivertracker.app</string>
     <string name="custom_url_scheme">com.drivertracker.app</string>
+    
+    <!-- Notification strings for background tracking -->
+    <string name="location_notification_title">Tracking Active</string>
+    <string name="location_notification_text">Driver Tracker is recording your location</string>
+    <string name="location_notification_channel">Location Tracking</string>
+    <string name="location_notification_channel_description">Shows when location tracking is active</string>
 </resources>

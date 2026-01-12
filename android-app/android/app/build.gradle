@@ -3,29 +3,84 @@ apply plugin: 'com.android.application'
 android {
     namespace "com.drivertracker.app"
     compileSdkVersion rootProject.ext.compileSdkVersion
+    
     defaultConfig {
         applicationId "com.drivertracker.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
         aaptOptions {
-             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
-             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            // Files and dirs to omit from the packaged assets dir
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    buildTypes {
+    
+    signingConfigs {
+        // For production, create a keystore and configure here
+        // Or use environment variables for CI/CD:
+        // storeFile file(System.getenv("KEYSTORE_PATH") ?: "keystore.jks")
+        // storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
+        // keyAlias System.getenv("KEY_ALIAS") ?: ""
+        // keyPassword System.getenv("KEY_PASSWORD") ?: ""
+        
         release {
+            // Placeholder - replace with your actual keystore
+            // To generate a keystore:
+            // keytool -genkey -v -keystore driver-tracker.keystore -alias driver-tracker -keyalg RSA -keysize 2048 -validity 10000
+            if (project.hasProperty('RELEASE_STORE_FILE')) {
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+    
+    buildTypes {
+        debug {
+            debuggable true
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+        }
+        
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // Use release signing config if available, otherwise use debug
+            if (project.hasProperty('RELEASE_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    // Enable build optimizations
+    buildFeatures {
+        buildConfig true
+    }
+    
+    // Optimize APK packaging
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/NOTICE.txt', 'META-INF/LICENSE.txt']
         }
     }
 }
 
 repositories {
-    flatDir{
+    flatDir {
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
 }
