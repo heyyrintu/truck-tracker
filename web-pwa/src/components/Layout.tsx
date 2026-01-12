@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTracking } from '../contexts/TrackingContext';
 
@@ -10,7 +10,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
     const { user, logout } = useAuth();
     const { isOnline, queuedPointsCount, isTracking, isPaused } = useTracking();
-    const location = useLocation();
+    useLocation(); // For route awareness
 
     const isAdmin = user?.role === 'admin';
 
@@ -88,8 +88,8 @@ export default function Layout({ children }: LayoutProps) {
                             {!isAdmin && (isTracking || isPaused) && (
                                 <div
                                     className={`flex items-center gap-2 px-3 py-1 rounded-full ${isPaused
-                                            ? 'bg-amber-500/20 text-amber-500'
-                                            : 'bg-emerald-500/20 text-emerald-500'
+                                        ? 'bg-amber-500/20 text-amber-500'
+                                        : 'bg-emerald-500/20 text-emerald-500'
                                         }`}
                                 >
                                     <div

@@ -63,8 +63,6 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
 
     const watchIdRef = useRef<number | null>(null);
     const lastPositionRef = useRef<Position | null>(null);
-    // timerRef is kept for future use if interval-based tracking needed
-    const _timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // Check geolocation permission
     useEffect(() => {
@@ -315,7 +313,7 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
             // Trigger final sync
             await triggerSync();
 
-            const { session } = await api.stopSession();
+            await api.stopSession();
             setActiveSession(null);
             setIsTracking(false);
             setIsPaused(false);

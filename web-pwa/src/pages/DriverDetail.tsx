@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 import { api } from '../lib/api';
 import { Session, LocationPoint } from '../types';
 import 'leaflet/dist/leaflet.css';
@@ -239,8 +239,8 @@ export default function DriverDetail() {
                 <button
                     onClick={() => setActiveTab('map')}
                     className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${activeTab === 'map'
-                            ? 'bg-primary-500 text-white'
-                            : 'text-dark-400 hover:text-white'
+                        ? 'bg-primary-500 text-white'
+                        : 'text-dark-400 hover:text-white'
                         }`}
                 >
                     Map View
@@ -248,8 +248,8 @@ export default function DriverDetail() {
                 <button
                     onClick={() => setActiveTab('timeline')}
                     className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${activeTab === 'timeline'
-                            ? 'bg-primary-500 text-white'
-                            : 'text-dark-400 hover:text-white'
+                        ? 'bg-primary-500 text-white'
+                        : 'text-dark-400 hover:text-white'
                         }`}
                 >
                     Timeline
@@ -341,7 +341,7 @@ export default function DriverDetail() {
                                         </td>
                                     </tr>
                                 ) : (
-                                    locations.map((loc, index) => (
+                                    locations.map((loc) => (
                                         <tr
                                             key={loc.id}
                                             className="border-b border-dark-700/50 hover:bg-dark-800/30 transition-colors"

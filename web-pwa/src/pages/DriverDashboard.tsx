@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
 import { useTracking } from '../contexts/TrackingContext';
-import { TRACKING_MODES, TrackingMode } from '../types';
+
 
 export default function DriverDashboard() {
-    const { user, activeSession } = useAuth();
+    const { activeSession } = useAuth();
     const {
         isTracking,
         isPaused,
@@ -100,18 +100,18 @@ export default function DriverDashboard() {
                     <h2 className="text-lg font-semibold text-white">Tracking Status</h2>
                     <div
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${isTracking && !isPaused
-                                ? 'bg-emerald-500/20 text-emerald-400'
-                                : isPaused
-                                    ? 'bg-amber-500/20 text-amber-400'
-                                    : 'bg-dark-700 text-dark-400'
+                            ? 'bg-emerald-500/20 text-emerald-400'
+                            : isPaused
+                                ? 'bg-amber-500/20 text-amber-400'
+                                : 'bg-dark-700 text-dark-400'
                             }`}
                     >
                         <div
                             className={`w-2.5 h-2.5 rounded-full ${isTracking && !isPaused
-                                    ? 'bg-emerald-500 animate-pulse'
-                                    : isPaused
-                                        ? 'bg-amber-500'
-                                        : 'bg-dark-500'
+                                ? 'bg-emerald-500 animate-pulse'
+                                : isPaused
+                                    ? 'bg-amber-500'
+                                    : 'bg-dark-500'
                                 }`}
                         ></div>
                         <span className="text-sm font-medium">
@@ -411,8 +411,8 @@ export default function DriverDashboard() {
                             <button
                                 onClick={() => setTrackingMode('normal')}
                                 className={`p-3 rounded-xl text-sm font-medium transition-all ${trackingMode === 'normal'
-                                        ? 'bg-primary-500 text-white'
-                                        : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
+                                    ? 'bg-primary-500 text-white'
+                                    : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                                     }`}
                             >
                                 <p className="font-semibold">Normal</p>
@@ -421,8 +421,8 @@ export default function DriverDashboard() {
                             <button
                                 onClick={() => setTrackingMode('lowPower')}
                                 className={`p-3 rounded-xl text-sm font-medium transition-all ${trackingMode === 'lowPower'
-                                        ? 'bg-amber-500 text-white'
-                                        : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
+                                    ? 'bg-amber-500 text-white'
+                                    : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                                     }`}
                             >
                                 <p className="font-semibold">Low Power</p>

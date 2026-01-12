@@ -9,7 +9,7 @@ interface TrackerDB extends DBSchema {
     };
     'sync-meta': {
         key: string;
-        value: { lastSyncAttempt: string; failCount: number };
+        value: { key: string; lastSyncAttempt: string; failCount: number };
     };
 }
 
