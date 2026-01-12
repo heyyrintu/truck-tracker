@@ -1,0 +1,97 @@
+// Prisma Schema for Driver Tracker
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  driver
+}
+
+enum SessionStatus {
+  active
+  paused
+  completed
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  phone        String?
+  name         String
+  passwordHash String    @map("password_hash")
+  role         UserRole  @default(driver)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  sessions       Session[]
+  locationPoints LocationPoint[]
+  lastSeen       DriverLastSeen?
+
+  @@map("users")
+}
+
+model Session {
+  id           String        @id @default(uuid())
+  driverId     String        @map("driver_id")
+  status       SessionStatus @default(active)
+  startTimeUtc DateTime      @map("start_time_utc")
+  endTimeUtc   DateTime?     @map("end_time_utc")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  driver         User            @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  locationPoints LocationPoint[]
+
+  @@index([driverId])
+  @@index([status])
+  @@index([startTimeUtc])
+  @@map("sessions")
+}
+
+model LocationPoint {
+  id        String   @id @default(uuid())
+  pointId   String   @unique @map("point_id") // Client-generated UUID for idempotency
+  sessionId String   @map("session_id")
+  driverId  String   @map("driver_id")
+  tsUtc     DateTime @map("ts_utc") // Timestamp when location was captured
+  lat       Float
+  lng       Float
+  accuracy  Float?   // Accuracy in meters
+  speed     Float?   // Speed in m/s
+  heading   Float?   // Heading in degrees (0-360)
+  provider  String?  // GPS, NETWORK, FUSED, etc.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  driver  User    @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([driverId])
+  @@index([tsUtc])
+  @@index([driverId, tsUtc])
+  @@map("location_points")
+}
+
+// Materialized view-like table for quick last seen lookup
+// Updated via trigger or application logic
+model DriverLastSeen {
+  driverId     String   @id @map("driver_id")
+  lastTsUtc    DateTime @map("last_ts_utc")
+  lastLat      Float    @map("last_lat")
+  lastLng      Float    @map("last_lng")
+  lastAccuracy Float?   @map("last_accuracy")
+  sessionId    String?  @map("session_id")
+  status       String?  // tracking, paused, offline
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  driver User @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@map("driver_last_seen")
+}
