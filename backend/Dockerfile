@@ -1,10 +1,10 @@
 # Build Stage
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Install OpenSSL 1.1 compatibility for Prisma
-RUN apk add --no-cache openssl1.1-compat
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl
 
 # Copy package files
 COPY package*.json ./
@@ -23,12 +23,14 @@ RUN npx prisma generate
 RUN npm run build
 
 # Production Stage
-FROM node:20-alpine AS production
+FROM node:20-slim AS production
 
 WORKDIR /app
 
-# Install OpenSSL 1.1 compatibility and wget for healthcheck
-RUN apk add --no-cache openssl1.1-compat wget
+# Install OpenSSL and wget for Prisma and healthcheck
+RUN apt-get update -y && \
+  apt-get install -y openssl wget && \
+  rm -rf /var/lib/apt/lists/*
 
 # Install production dependencies only
 COPY package*.json ./
