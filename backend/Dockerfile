@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install OpenSSL 1.1 compatibility for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -24,12 +27,15 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
+# Install OpenSSL 1.1 compatibility and wget for healthcheck
+RUN apk add --no-cache openssl1.1-compat wget
+
 # Install production dependencies only
 COPY package*.json ./
 COPY prisma ./prisma/
 RUN npm ci --only=production --legacy-peer-deps
 
-# Copy Prisma client
+# Copy Prisma client from builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
